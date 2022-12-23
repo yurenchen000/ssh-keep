@@ -1,14 +1,18 @@
 ssh-keep
 ========
 
+## 🍵 what's this
+
 keep your ssh connection survive from network fluctuation or wifi switching
 
 Inspired by
 https://eternalterminal.dev
 
-## how to use
 
-### build
+It work as a relay-connection between ssh-client and ssh-server.
+
+
+## 🍵 build
 
 ```bash
 GO111MODULE=off GOPATH=$PWD go build -o ssh-keep-c client.go
@@ -20,17 +24,19 @@ then got
 - ssh-keep-s //the server side, ssh relay
 
 
-### deploy
+## 🍵 deploy
 
 
-#### server side
+### 1. server side
 
-listen on a tcp port (:2021 for example, for client connect), connect to your ssh server :22.
+connect to your real ssh server :22.
+and listen on a tcp port (:2021 for example, wait for client connect)
+
 ```
 ./ssh-keep-s -server 127.0.0.1:22 -listen :2021
 ```
 
-#### client side
+### 2. client side
 
 ```bash
 ssh -o ProxyCommand='ssh-keep-c --server %h:2021 2>/dev/null' your_ssh_server
@@ -44,7 +50,7 @@ Host your_ssh_server
     ProxyCommand ssh-keep-c --server %h:2021 2>/dev/null
 ```
 
-//then it can also work as a jump host
+//then it can also work as a jump host (get the benefit of stable connection)
 ```
 ## other can use it as a jump host
 Host other_ssh_server

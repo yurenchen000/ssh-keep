@@ -73,3 +73,11 @@ Host other_ssh_server
     ProxyJump your_ssh_server
 ```
 
+
+## tips
+when lose connect with server, you can't exit by `Ctrl+D`  
+//that's bash exit key, but you lose connection with it.
+
+use 
+- `Enter ~ . ` to exit 
+- `Enter ~ ? ` for help

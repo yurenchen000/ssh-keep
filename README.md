@@ -12,6 +12,22 @@ https://eternalterminal.dev
 It work as a relay-connection between ssh-client and ssh-server.
 
 
+```
+                                        [ssh server]
+                                             |
+                                            tcp
+                                             |
+relay-client ---- relay-connection ---- relay-server
+    |
+  stdio
+    |
+[ssh client]
+```
+
+the relay-client & relay-server fake a persistent connection,  
+quietly reconnect and never noitfy ssh-client/ssh-server.
+
+
 ## 🍵 build
 
 ```bash

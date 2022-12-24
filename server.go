@@ -177,56 +177,52 @@ func suckA(reader *bufio.Reader, readA chan<- []byte) {
 func readAWriteB(readA <-chan []byte, connB net.Conn, ctx <-chan int, sess *Session) {
 	// read from conn1 and write to conn2
 	fmt.Println("++ reading A writing B..", connB)
-	func() {
-		for {
-			select {
-			case val, ok := <-ctx: //read OR closed
-				Println("-- reading A writing B: ctxB close:", connB, val, ok)
-				return
-			case input, ok := <-readA:
-				sess.Self_mid++
-				if !ok {
-					Println("readA chan fail:", ok)
-				}
-
-				LogPkgInfo("- server send:", " \033[32m", MsgInfo(sess.Self_mid, sess.Recv_mid, len(input)), "\033[0m", connB)
-				LogPkgBody("\n\033[32m", (BufMax(input, 50)), "\033[0m")
-
-				err := sess.SendMsg(input, connB)
-				if err != nil {
-					fmt.Println("-- reading A writing B: writeB Error", connB, err)
-					return
-				}
+	for {
+		select {
+		case val, ok := <-ctx: //read OR closed
+			Println("-- reading A writing B: ctxB close:", connB, val, ok)
+			return
+		case input, ok := <-readA:
+			sess.Self_mid++
+			if !ok {
+				Println("readA chan fail:", ok)
 			}
 
+			LogPkgInfo("- server send:", " \033[32m", MsgInfo(sess.Self_mid, sess.Recv_mid, len(input)), "\033[0m", connB)
+			LogPkgBody("\n\033[32m", (BufMax(input, 50)), "\033[0m")
+
+			err := sess.SendMsg(input, connB)
+			if err != nil {
+				fmt.Println("-- reading A writing B: writeB Error", connB, err)
+				return
+			}
 		}
-	}()
+
+	}
 }
 
 func readBWriteA(connB, connA net.Conn, sess *Session) {
 	fmt.Println("++ reading B writing A..", connB, connA)
-	func() {
-		for {
-			buf, mid, rid := sess.ReadMsg(connB)
-			if mid == -1 {
-				Println("-- reading B: Error")
-				return
-			}
-
-			if mid < int(sess.Recv_mid) && int(sess.Recv_mid)-mid < 3000 { //not loopback
-				continue //drop dup pkt
-			}
-			sess.Recv_mid = uint16(mid) //up recv_mid
-			// Println("= recv_msg:", sess.recv_mid, "len", len(buf))
-
-			LogPkgInfo("- server recv:", "\033[33m", MsgInfo(uint16(mid), uint16(rid), len(buf)), "\033[0m ", connB)
-			LogPkgBody("\n\033[33m", (BufMax(buf, 50)), "\033[0m")
-
-			_, err := connA.Write(buf)
-			if err != nil {
-				fmt.Println("-- reading B writing A: write Error", connB, connA, err)
-				return
-			}
+	for {
+		buf, mid, rid := sess.ReadMsg(connB)
+		if mid == -1 {
+			Println("-- reading B: Error")
+			return
 		}
-	}()
+
+		if mid < int(sess.Recv_mid) && int(sess.Recv_mid)-mid < 3000 { //not loopback
+			continue //drop dup pkt
+		}
+		sess.Recv_mid = uint16(mid) //up recv_mid
+		// Println("= recv_msg:", sess.recv_mid, "len", len(buf))
+
+		LogPkgInfo("- server recv:", "\033[33m", MsgInfo(uint16(mid), uint16(rid), len(buf)), "\033[0m ", connB)
+		LogPkgBody("\n\033[33m", (BufMax(buf, 50)), "\033[0m")
+
+		_, err := connA.Write(buf)
+		if err != nil {
+			fmt.Println("-- reading B writing A: write Error", connB, connA, err)
+			return
+		}
+	}
 }

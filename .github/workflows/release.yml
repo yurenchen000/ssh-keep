@@ -1,11 +1,11 @@
 name: Go Build and Release
 
-on:
+on: 
   push:
-    branches:
-      - master
     tags:
-      - 'v.*'
+      - "v*"
+  release:
+    types: [created]
 
 jobs:
   build:

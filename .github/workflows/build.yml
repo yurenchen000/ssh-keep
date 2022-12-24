@@ -1,12 +1,10 @@
 name: Go Build
 
 #on: [push]
-on:
+on: 
   push:
-    branches:
-      - master
-  tags:
-    - 'v*'
+    tags:
+      - "v*"
 
 jobs:
   build:

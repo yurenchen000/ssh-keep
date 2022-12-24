@@ -1,3 +1,12 @@
+/*
+ssh-keep
+   keep your ssh connection survive from network fluctuation or wifi switching
+
+ Author: yurenchen@yeah.net
+License: GPLv2
+   Site: https://github.com/yurenchen000/ssh-keep
+*/
+
 package main
 
 import (

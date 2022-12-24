@@ -1,0 +1,50 @@
+name: Go Build and Release
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.18
+    - name: Build client
+      run: GO111MODULE=off GOPATH=$PWD go build -o ssh-keep-c client.go
+    - name: Build server
+      run: GO111MODULE=off GOPATH=$PWD go build -o ssh-keep-s server.go
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Upload client binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ssh-keep-c
+        asset_name: ssh-keep-c-${{ github.ref }}.bin
+        asset_content_type: application/octet-stream
+    - name: Upload server binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ssh-keep-s
+        asset_name: ssh-keep-s-${{ github.ref }}.bin
+        asset_content_type: application/octet-stream

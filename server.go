@@ -34,6 +34,11 @@ type Session struct {
 	connB net.Conn
 	readA chan []byte
 	ctxA  chan int
+
+	//ack for pkt
+	timer     *time.Timer
+	last_read time.Time
+	last_send time.Time
 }
 
 func connA_new() net.Conn {
@@ -70,7 +75,9 @@ func connA_get(sessId uint32) *Session {
 		Sess: Sess{
 			Pend_map: make(map[uint16][]byte),
 		},
+		timer: time.NewTimer(99 * time.Second),
 	}
+	sess.timer.Stop()
 	sessMap[sessId] = sess
 	fmt.Println("++ create new session:", &sess, connA)
 
@@ -189,8 +196,24 @@ func readAWriteB(readA <-chan []byte, connB net.Conn, ctx <-chan int, sess *Sess
 	for {
 		select {
 		case val, ok := <-ctx: //read OR closed
-			Println("-- reading A writing B: ctxB close:", connB, val, ok)
+			Println("-- readAWriteB: ctxB close:", connB, val, ok)
 			return
+		case _ = <-sess.timer.C: //ack timeout: some msg no resp, so we send ack pkt
+			if sess.last_send.After(sess.last_read) { //already ack
+				continue
+			}
+
+			// send positive ack //no dat
+			sess.Self_mid++
+			fmt.Println("-- readAWriteB send ack", sess.Self_mid)
+			err := sess.SendMsg([]byte{}, connB)
+			if err != nil {
+				fmt.Println("-- readAWriteB: writeB Error", connB, err)
+				return
+			}
+			sess.last_send = time.Now()
+
+			continue
 		case input, ok := <-readA:
 			sess.Self_mid++
 			if !ok {
@@ -202,9 +225,10 @@ func readAWriteB(readA <-chan []byte, connB net.Conn, ctx <-chan int, sess *Sess
 
 			err := sess.SendMsg(input, connB)
 			if err != nil {
-				fmt.Println("-- reading A writing B: writeB Error", connB, err)
+				fmt.Println("-- readAWriteB: writeB Error", connB, err)
 				return
 			}
+			sess.last_send = time.Now()
 		}
 
 	}
@@ -218,6 +242,9 @@ func readBWriteA(connB, connA net.Conn, sess *Session) {
 			Println("-- reading B: Error")
 			return
 		}
+
+		sess.last_read = time.Now() //time for positive ack
+		sess.timer.Reset(time.Second * 2)
 
 		if mid < int(sess.Recv_mid) && int(sess.Recv_mid)-mid < 3000 { //not loopback
 			continue //drop dup pkt

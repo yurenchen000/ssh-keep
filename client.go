@@ -10,7 +10,6 @@ import (
 	"time"
 
 	. "pkt"
-	Pkt "pkt"
 )
 
 var ServerAddr = "127.0.0.1:1234"
@@ -86,10 +85,6 @@ func connect(host string, stdoutWriter *bufio.Writer, sess *Session) (net.Conn, 
 	go func() {
 		for {
 			// Check if the connection is still alive
-			// conn.SetDeadline(time.Now().Add(time.Second * 5))
-			// conn.(*net.TCPConn).SetKeepAlive(true)
-			// err := conn.(*net.TCPConn).SetKeepAlivePeriod(time.Second)
-
 			now := time.Now()
 			wait_time := now.Sub(last_unack)
 			if conn_gone ||
@@ -164,7 +159,7 @@ func readMsg(reader net.Conn) (out []byte, mid int) {
 		return nil, -1
 	}
 
-	pkt := Pkt.DecHead(buf)
+	pkt := DecHead(buf)
 	mid = int(pkt.Mid)
 	out = make([]byte, pkt.Len)
 	n, err = io.ReadFull(reader, out)

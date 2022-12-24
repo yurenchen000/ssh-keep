@@ -128,6 +128,7 @@ func connect(host string, stdoutWriter *bufio.Writer, sess *Session) (net.Conn, 
 							// continue //re-conn
 							break
 						}
+						last_read = time.Now()
 
 						Println("recv-sess:", "#", rid, sess.Self_mid)
 						Println("re-send: ", &sess, rid, sess.Self_mid)

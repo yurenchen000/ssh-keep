@@ -1,0 +1,39 @@
+name: Build and Release
+# .github/workflows/release.yaml
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  releases-matrix:
+    name: ReleaseGo
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # build and publish in parallel: linux/amd64, linux/arm64, windows/amd64, darwin/amd64, darwin/arm64
+        goos: [linux, darwin]
+        goarch: [amd64, arm64, arm]
+        exclude:
+          - goarch: arm
+            goos: darwin
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: wangyoucao577/go-release-action@v1.34
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        # goos: linux
+        # goarch: amd64
+        # ldflags: -s -w
+        goos: ${{ matrix.goos }}
+        goarch: ${{ matrix.goarch }}
+        build_command: |
+          make DEST=${BUILD_ARTIFACTS_FOLDER}
+
+        #  env GO111MODULE=off go build -o hello
+        #  env GO111MODULE=off go build -o world
+        # can't use multi cmd
+        # no strip cmd
+        md5sum: FALSE
+

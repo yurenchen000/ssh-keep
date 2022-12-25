@@ -1,6 +1,9 @@
 ssh-keep
 ========
 
+[![Releases](https://github.com/yurenchen000/ssh-keep/actions/workflows/release.yml/badge.svg)](https://github.com/yurenchen000/ssh-keep/releases)
+
+
 ## 🍵 what's this
 
 keep your ssh connection survive from network fluctuation or wifi switching
@@ -74,10 +77,13 @@ Host other_ssh_server
 ```
 
 
-## tips
+## 🍵 tips
 when lose connect with server, you can't exit by `Ctrl+D`  
 //that's bash exit key, but you lose connection with it.
 
 use 
 - `Enter ~ . ` to exit 
 - `Enter ~ ? ` for help
+
+//that's ssh key.
+

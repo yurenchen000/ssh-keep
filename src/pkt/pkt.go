@@ -190,7 +190,7 @@ func (p PendMap) Keys() []uint16 {
 func (p PendMap) Trim(st, ed uint16) {
 	if st <= ed {
 		// (st .. k .. ed) // [st+1, ed-1]
-		for k, _ := range p {
+		for k := range p {
 			if st < k && k <= ed {
 				//keep
 			} else {
@@ -199,7 +199,7 @@ func (p PendMap) Trim(st, ed uint16) {
 		}
 	} else {
 		//  k..ed)  (st..k // [0,ed-1] [st+1,Max]
-		for k, _ := range p {
+		for k := range p {
 			if st < k || k <= ed {
 				//keep
 			} else {

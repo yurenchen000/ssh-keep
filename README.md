@@ -1,9 +1,10 @@
 ssh-keep
 ========
 
-[![Releases](https://github.com/yurenchen000/ssh-keep/actions/workflows/release.yml/badge.svg)](https://github.com/yurenchen000/ssh-keep/releases)
+[![build](https://github.com/yurenchen000/ssh-keep/actions/workflows/release.yml/badge.svg)](https://github.com/yurenchen000/ssh-keep/releases)
+[![go-report](https://goreportcard.com/badge/github.com/yurenchen000/ssh-keep)](https://goreportcard.com/report/github.com/yurenchen000/ssh-keep)
 
-[![](https://img.shields.io/github/v/release/yurenchen000/ssh-keep)](https://github.com/yurenchen000/ssh-keep/releases)
+[![release](https://img.shields.io/github/v/release/yurenchen000/ssh-keep)](https://github.com/yurenchen000/ssh-keep/releases)
 
 ## 🍵 what's this
 

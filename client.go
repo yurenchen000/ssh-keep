@@ -21,8 +21,10 @@ import (
 	. "pkt"
 )
 
+var build_version string
 var ServerAddr = "127.0.0.1:1234"
 var flgServerAddr = flag.String("server", ServerAddr, "connect to server")
+var flgVersion = flag.Bool("version", false, "current version: "+build_version)
 
 var conn_gone = false
 var last_read time.Time = time.Now() //last read from server
@@ -40,6 +42,10 @@ type Session struct {
 
 func main() {
 	flag.Parse()
+	if *flgVersion {
+		Println("version:", build_version)
+		return
+	}
 
 	// pseudo random number
 	rand.Seed(time.Now().UnixNano())

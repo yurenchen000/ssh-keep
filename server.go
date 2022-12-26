@@ -24,8 +24,10 @@ const (
 	serverAddr = "127.0.0.1:4321"
 )
 
+var build_version string
 var flgListenAddr = flag.String("listen", listenAddr, "listen on addr")
 var flgServerAddr = flag.String("server", serverAddr, "connect to server")
+var flgVersion = flag.Bool("version", false, "current version: "+build_version)
 
 type Session struct {
 	Sess
@@ -139,6 +141,11 @@ func connB_wait(connB net.Conn) {
 
 func main() {
 	flag.Parse()
+	if *flgVersion {
+		Println("version:", build_version)
+		return
+	}
+
 	sessMap = make(map[uint32]*Session)
 
 	//-------------------- B. listener

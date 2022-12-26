@@ -21,7 +21,7 @@ import (
 
 const (
 	listenAddr = "0.0.0.0:1234"
-	serverAddr = "127.0.0.1:4321"
+	serverAddr = "127.0.0.1:22"
 )
 
 var build_version string

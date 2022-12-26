@@ -3,6 +3,7 @@ ssh-keep
 
 [![Releases](https://github.com/yurenchen000/ssh-keep/actions/workflows/release.yml/badge.svg)](https://github.com/yurenchen000/ssh-keep/releases)
 
+[![](https://img.shields.io/github/v/release/yurenchen000/ssh-keep)](https://github.com/yurenchen000/ssh-keep/releases)
 
 ## 🍵 what's this
 

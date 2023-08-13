@@ -65,14 +65,19 @@ ssh -o ProxyCommand='ssh-keep-c --server %h:2021 2>/dev/null' your_ssh_server
 
 or put it into ssh_config
 
-```conf
+```cfg
 ## setup a ssh-keep client
 Host your_ssh_server
     ProxyCommand ssh-keep-c --server %h:2021 2>/dev/null
+
+    # Tell ssh don't kill connection when alive msg timeout
+    # (Useful when PC suspend/hibernate/offline hours)
+    ServerAliveInterval 0
+    TCPKeepAlive no
 ```
 
 //then it can also work as a jump host (get the benefit of stable connection)
-```
+```cfg
 ## other can use it as a jump host
 Host other_ssh_server
     ProxyJump your_ssh_server

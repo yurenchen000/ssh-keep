@@ -150,6 +150,7 @@ func main() {
 		Println("version:", build_version)
 		return
 	}
+	Println("== server\033[32;1m", build_version, "\033[0mstart..")
 
 	sessMap = make(map[uint32]*Session)
 

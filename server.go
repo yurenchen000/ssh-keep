@@ -14,6 +14,7 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"sync"
 	"time"
 
 	. "pkt"
@@ -36,6 +37,7 @@ type Session struct {
 	connB net.Conn
 	readA chan []byte
 	ctxA  chan int
+	lock  sync.Mutex //lock for sess re-use
 
 	//ack for pkt
 	timer     *time.Timer
@@ -94,6 +96,9 @@ func connB_init(connB net.Conn, sess *Session, need_mid uint16) { // struct must
 	fmt.Println("connB old:", sess.connB)
 
 	// close current connection if it exists
+	sess.lock.Lock()
+	defer sess.lock.Unlock()
+
 	if sess.connB != nil {
 		fmt.Println("\n-- close old connB:", sess.connB)
 		sess.connB.Close() //stop old readBWriteA
@@ -145,6 +150,7 @@ func main() {
 		Println("version:", build_version)
 		return
 	}
+	Println("== server\033[32;1m", build_version, "\033[0mstart..")
 
 	sessMap = make(map[uint32]*Session)
 

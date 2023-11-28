@@ -53,10 +53,24 @@ then got
 connect to your real ssh server :22.
 and listen on a tcp port (:2021 for example, wait for client connect)
 
-```
+Run manually
+```sh
 ./ssh-keep-s -server 127.0.0.1:22 -listen :2021
 ```
 
+OR Use systemd service:
+```sh
+#install
+sudo cp -pv ssh-keep-s  /usr/local/bin/
+sudo cp -pv ssh-keep.service /etc/systemd/system/
+sudo systemctl daemon-reload
+
+#start
+sudo systemctl start ssh-keep.service
+
+#auto start
+sudo systemctl enable ssh-keep.service
+```
 ### 2. client side
 
 ```bash

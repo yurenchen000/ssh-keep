@@ -1,0 +1,23 @@
+
+[Unit]
+Description=SSH Keep Alive Service
+After=network.target
+
+[Service]
+ExecStart=ssh-keep-s -server 127.0.0.1:22 -listen :2022
+Restart=always
+User=nobody
+WorkingDirectory=/run
+
+## DONT LOG
+StandardOutput=file:/dev/null
+StandardError=file:/dev/null
+
+## LOG to file
+##   DON'T cat this log when login via ssh-keep, it'll short circuit
+#StandardOutput=file:/run/ssh-keep-s.out
+#StandardError=file:/run/ssh-keep-s.out
+
+[Install]
+WantedBy=default.target
+

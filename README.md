@@ -71,6 +71,20 @@ sudo systemctl start ssh-keep.service
 #auto start
 sudo systemctl enable ssh-keep.service
 ```
+
+sshd_config  
+// or put it into `/etc/ssh/sshd_config.d/ssh_keep.conf`
+```cfg
+############# local conn for ssh-keep
+Match Address 127.0.0.1,::1
+    # max 20 day timeout
+    ClientAliveInterval 3600
+    ClientAliveCountMax 480
+```
+
+// reload sshd_config  
+`sudo systemctl reload ssh`
+
 ### 2. client side
 
 ```bash
@@ -84,10 +98,13 @@ or put it into ssh_config
 Host your_ssh_server
     ProxyCommand ssh-keep-c --server %h:2021 2>/dev/null
 
-    # Tell ssh don't kill connection when alive msg timeout
-    # (Useful when PC suspend/hibernate/offline hours)
+    ## not send alive msg (Useful when PC suspend/hibernate/offline hours)
     ServerAliveInterval 0
     TCPKeepAlive no
+
+    ## or long timeout:  (max 20 day timeout)
+    #ClientAliveInterval 3600
+    #ClientAliveCountMax 480
 ```
 
 //then it can also work as a jump host (get the benefit of stable connection)

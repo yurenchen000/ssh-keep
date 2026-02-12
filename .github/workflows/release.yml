@@ -29,7 +29,7 @@ jobs:
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
         build_command: |
-          make DEST=${BUILD_ARTIFACTS_FOLDER}
+          make DEST=${BUILD_ARTIFACTS_FOLDER} CGO_ENABLED=0
 
         #  env GO111MODULE=off go build -o hello
         #  env GO111MODULE=off go build -o world
